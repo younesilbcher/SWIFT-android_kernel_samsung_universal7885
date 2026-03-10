@@ -4,22 +4,20 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     steps:
       - name: Checkout Source
         uses: actions/checkout@v4
 
       - name: Install Build Tools
         run: |
-          sudo apt update
-          sudo apt install -y bc build-essential zip gcc-aarch64-linux-gnu binutils-aarch64-linux-gnu libssl-dev flex bison libelf-dev
+          sudo apt-get update
+          sudo apt-get install -y bc build-essential zip gcc-aarch64-linux-gnu binutils-aarch64-linux-gnu libssl-dev flex bison ccache libelf-dev
 
       - name: Build Kernel
         run: |
           export ARCH=arm64
           export CROSS_COMPILE=aarch64-linux-gnu-
-          # الغاء الاعتماد على ccache لتجنب الخطأ
-          export USE_CCACHE=0
           
           make exynos7885-jackpotlte_eur_defconfig
           make -j$(nproc) ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu-
