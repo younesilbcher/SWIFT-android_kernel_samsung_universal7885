@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Source
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Install Build Tools
         run: |
@@ -18,13 +18,11 @@ jobs:
         run: |
           export ARCH=arm64
           export CROSS_COMPILE=aarch64-linux-gnu-
-          # اسم ملف التكوين الذي عدلناه في المجلد arch/arm64/configs/
           make exynos7885-jackpotlte_eur_defconfig
           make -j$(nproc) ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu-
 
       - name: Upload Result
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: Flashable-Kernel
           path: arch/arm64/boot/Image.gz-dtb
-          
