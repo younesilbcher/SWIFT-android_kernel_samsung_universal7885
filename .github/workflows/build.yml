@@ -12,12 +12,15 @@ jobs:
       - name: Install Build Tools
         run: |
           sudo apt update
-          sudo apt install -y bc build-essential zip gcc-aarch64-linux-gnu binutils-aarch64-linux-gnu libssl-dev
+          sudo apt install -y bc build-essential zip gcc-aarch64-linux-gnu binutils-aarch64-linux-gnu libssl-dev flex bison libelf-dev
 
       - name: Build Kernel
         run: |
           export ARCH=arm64
           export CROSS_COMPILE=aarch64-linux-gnu-
+          # الغاء الاعتماد على ccache لتجنب الخطأ
+          export USE_CCACHE=0
+          
           make exynos7885-jackpotlte_eur_defconfig
           make -j$(nproc) ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu-
 
@@ -26,3 +29,4 @@ jobs:
         with:
           name: Flashable-Kernel
           path: arch/arm64/boot/Image.gz-dtb
+          
