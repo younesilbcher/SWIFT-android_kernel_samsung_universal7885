@@ -1,0 +1,30 @@
+name: Pro Kernel Builder
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Source
+        uses: actions/checkout@v3
+
+      - name: Install Build Tools
+        run: |
+          sudo apt update
+          sudo apt install -y bc build-essential zip gcc-aarch64-linux-gnu binutils-aarch64-linux-gnu libssl-dev
+
+      - name: Build Kernel
+        run: |
+          export ARCH=arm64
+          export CROSS_COMPILE=aarch64-linux-gnu-
+          # اسم ملف التكوين الذي عدلناه في المجلد arch/arm64/configs/
+          make exynos7885-jackpotlte_eur_defconfig
+          make -j$(nproc) ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu-
+
+      - name: Upload Result
+        uses: actions/upload-artifact@v3
+        with:
+          name: Flashable-Kernel
+          path: arch/arm64/boot/Image.gz-dtb
+          
